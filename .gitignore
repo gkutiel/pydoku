@@ -1,0 +1,17 @@
+.DS_Store
+
+*.lock
+*.aux
+*.fdb_latexmk
+*.fls
+*.pdf
+*.tex
+*.txt
+*.xdv
+*.gz
+*.db
+*.log
+
+.vscode/
+__pycache__/
+*.egg-info/
