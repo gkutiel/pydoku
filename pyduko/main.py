@@ -11,14 +11,12 @@ class Sudoku:
         self.template = template
         self.sol = [[0] * n for _ in range(n)]
         self.vals = set(range(1, n+1))
+        self.cells = [(i, j) for i in range(n) for j in range(n)]
 
         random.seed(seed)
-        cells = [(i, j) for i in range(n) for j in range(n)]
-        shuffle(cells)
+        shuffle(self.cells)
 
-        self.cells = cells
-
-    def status(self):
+    def used(self):
         rows = defaultdict(set)
         cols = defaultdict(set)
         blks = defaultdict(set)
@@ -26,35 +24,43 @@ class Sudoku:
         for i, j in self.cells:
             v = self.sol[i][j]
             b = self.template[i][j]
+
             if v == 0:
                 continue
+
+            assert v not in rows[i] and v not in cols[j] and v not in blks[b]
 
             rows[i].add(v)
             cols[j].add(v)
             blks[b].add(v)
 
-        status = defaultdict(set)
+        return rows, cols, blks
+
+    def options(self):
+        rows, cols, blks = self.used()
+
+        options = defaultdict(set)
         for i, j in self.cells:
             v = self.sol[i][j]
             b = self.template[i][j]
             if v != 0:
-                status[(i, j)] = {v}
+                options[(i, j)] = {v}
             else:
-                status[(i, j)] = self.vals - rows[i] - cols[j] - blks[b]
+                options[(i, j)] = self.vals - rows[i] - cols[j] - blks[b]
 
-        return status
+        return options
 
     def solve(self):
-        if not self.is_valid():
+        if not self.has_options():
             return False
 
         if self.is_done():
             return True
 
-        status = self.status()
+        options = self.options()
 
         for i, j in self.cells:
-            vs = status[(i, j)]
+            vs = options[(i, j)]
 
             if not vs:
                 return False
@@ -63,21 +69,22 @@ class Sudoku:
                 self.sol[i][j] = vs.pop()
                 while not self.solve():
                     if not vs:
+                        self.sol[i][j] = 0
                         return False
                     self.sol[i][j] = vs.pop()
                 return True
 
         assert False, 'should not reach here'
 
-    def clear(self):
+    def hide(self):
         for i, j in self.cells:
             v = self.sol[i][j]
             self.sol[i][j] = 0
-            if any(len(vs) > 1 for vs in self.status().values()):
+            if any(len(vs) > 1 for vs in self.options().values()):
                 self.sol[i][j] = v
 
-    def is_valid(self):
-        return all(self.status().values())
+    def has_options(self):
+        return all(self.options().values())
 
     def is_done(self):
         return all(v != 0 for row in self.sol for v in row)
@@ -99,7 +106,6 @@ def get_borders(template):
 def tex(template, sol, out):
     n = len(sol)
     borders = get_borders(template)
-    print(len(borders))
     with open(out, 'w') as f:
         print(r'''\documentclass{article}
         \usepackage{tikz}
@@ -130,22 +136,50 @@ def tex(template, sol, out):
 
 
 if __name__ == '__main__':
-    # template = [
-    #     ['a', 'a', 'a', 'b', 'b', 'b'],
-    #     ['a', 'a', 'a', 'b', 'b', 'b'],
-    #     ['c', 'c', 'c', 'd', 'd', 'd'],
-    #     ['c', 'c', 'c', 'd', 'd', 'd'],
-    #     ['e', 'e', 'e', 'f', 'f', 'f'],
-    #     ['e', 'e', 'e', 'f', 'f', 'f']]
+    template_3x3 = [
+        ['a', 'b', 'c'],
+        ['a', 'b', 'c'],
+        ['a', 'b', 'c']]
 
-    template = [
-        ['a', 'a', 'b', 'b'],
-        ['a', 'e', 'f', 'b'],
-        ['a', 'e', 'f', 'b'],
-        ['e', 'e', 'f', 'f']]
+    # template_4x4 = [
+    #     ['a', 'e', 'f', 'b'],
+    #     ['a', 'a', 'b', 'b'],
+    #     ['a', 'e', 'f', 'b'],
+    #     ['e', 'e', 'f', 'f']]
 
-    sudoku = Sudoku(template)
-    assert sudoku.solve()
-    sudoku.clear()
+    template_4x4 = [
+        ['a', 'b', 'c', 'd'],
+        ['a', 'b', 'c', 'd'],
+        ['a', 'b', 'c', 'd'],
+        ['a', 'b', 'c', 'd']]
 
-    tex(template, sudoku.sol, 'tmp.tex')
+    template_5x5 = [
+        ['a', 'd', 'd', 'd', 'd'],
+        ['a', 'd', 'e', 'c', 'c'],
+        ['a', 'e', 'e', 'e', 'c'],
+        ['a', 'a', 'e', 'b', 'c'],
+        ['b', 'b', 'b', 'b', 'c']]
+
+    # template_5x5 = [
+    #     ['a', 'b', 'c', 'd', 'e'],
+    #     ['a', 'b', 'c', 'd', 'e'],
+    #     ['a', 'b', 'c', 'd', 'e'],
+    #     ['a', 'b', 'c', 'd', 'e'],
+    #     ['a', 'b', 'c', 'd', 'e']]
+
+    template_6x6 = [
+        ['a', 'a', 'a', 'b', 'b', 'b'],
+        ['a', 'a', 'a', 'b', 'b', 'b'],
+        ['c', 'c', 'c', 'd', 'd', 'd'],
+        ['c', 'c', 'c', 'd', 'd', 'd'],
+        ['e', 'e', 'e', 'f', 'f', 'f'],
+        ['e', 'e', 'e', 'f', 'f', 'f']]
+
+    sudoku = Sudoku(template_5x5, seed=2)
+    assert sudoku.solve(), (pprint(sudoku.sol), pprint(sudoku.options()))
+    sudoku.hide()
+
+    tex(
+        sudoku.template,
+        sudoku.sol,
+        'tmp.tex')
