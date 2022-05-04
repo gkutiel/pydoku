@@ -2,11 +2,15 @@ import random
 from pprint import pprint
 from collections import defaultdict
 from random import shuffle
+from tqdm import tqdm
+from math import factorial
 
 
 class Sudoku:
     def __init__(self, template, seed=2022):
         n = len(template)
+        self.bar = tqdm()
+        self.it = 1
 
         self.template = template
         self.sol = [[0] * n for _ in range(n)]
@@ -14,7 +18,6 @@ class Sudoku:
         self.cells = [(i, j) for i in range(n) for j in range(n)]
 
         random.seed(seed)
-        # shuffle(self.cells)
 
     def used(self):
         rows = defaultdict(set)
@@ -50,6 +53,12 @@ class Sudoku:
 
         return options
 
+    def count(self):
+        return sum(
+            1 if self.sol[i][j] != 0
+            else 0
+            for i, j in self.cells)
+
     def solve(self):
         if not self.has_options():
             return False
@@ -57,11 +66,15 @@ class Sudoku:
         if self.is_done():
             return True
 
+        self.it += 1
+        self.bar.update(self.it)
+        self.bar.set_description(f"{self.count()}/{len(self.cells)}")
         options = self.options()
 
         for i, j in self.cells:
             if self.sol[i][j] == 0:
-                vs = options[(i, j)]
+                vs = list(options[(i, j)])
+                shuffle(vs)
                 self.sol[i][j] = vs.pop()
                 while not self.solve():
                     self.sol[i][j] = 0
@@ -71,12 +84,12 @@ class Sudoku:
                     self.sol[i][j] = vs.pop()
                 return True
 
-        pprint(self.sol)
-        pprint(self.options())
         assert False, 'should not reach here'
 
     def hide(self):
-        for i, j in self.cells:
+        cells = self.cells.copy()
+        shuffle(cells)
+        for i, j in cells:
             v = self.sol[i][j]
             self.sol[i][j] = 0
             if any(len(vs) > 1 for vs in self.options().values()):
@@ -166,26 +179,57 @@ if __name__ == '__main__':
     #     ['a', 'b', 'c', 'd', 'e'],
     #     ['a', 'b', 'c', 'd', 'e']]
 
-    template_6x6 = [
-        ['a', 'a', 'a', 'b', 'b', 'b'],
-        ['a', 'a', 'a', 'b', 'b', 'b'],
-        ['c', 'c', 'c', 'd', 'd', 'd'],
-        ['c', 'c', 'c', 'd', 'd', 'd'],
-        ['e', 'e', 'e', 'f', 'f', 'f'],
-        ['e', 'e', 'e', 'f', 'f', 'f']]
-
     # template_6x6 = [
     #     ['a', 'a', 'a', 'b', 'b', 'b'],
-    #     ['a', 'a', 'e', 'f', 'b', 'b'],
-    #     ['a', 'e', 'e', 'f', 'f', 'b'],
-    #     ['d', 'e', 'e', 'f', 'f', 'c'],
-    #     ['d', 'd', 'e', 'f', 'c', 'c'],
-    #     ['d', 'd', 'd', 'c', 'c', 'c']]
+    #     ['a', 'a', 'a', 'b', 'b', 'b'],
+    #     ['c', 'c', 'c', 'd', 'd', 'd'],
+    #     ['c', 'c', 'c', 'd', 'd', 'd'],
+    #     ['e', 'e', 'e', 'f', 'f', 'f'],
+    #     ['e', 'e', 'e', 'f', 'f', 'f']]
 
-    sudoku = Sudoku(template_6x6, seed=0)
+    template_6x6 = [
+        ['a', 'a', 'a', 'b', 'b', 'b'],
+        ['a', 'a', 'e', 'f', 'b', 'b'],
+        ['a', 'e', 'e', 'f', 'f', 'b'],
+        ['d', 'e', 'e', 'f', 'f', 'c'],
+        ['d', 'd', 'e', 'f', 'c', 'c'],
+        ['d', 'd', 'd', 'c', 'c', 'c']]
+
+    template_7x7 = [
+        ['a', 'a', 'a', 'a', 'b', 'b', 'b'],
+        ['a', 'a', 'e', 'e', 'e', 'b', 'b'],
+        ['a', 'e', 'e', 'e', 'e', 'f', 'b'],
+        ['d', 'g', 'g', 'f', 'f', 'f', 'b'],
+        ['d', 'g', 'g', 'g', 'f', 'f', 'c'],
+        ['d', 'd', 'g', 'g', 'f', 'c', 'c'],
+        ['d', 'd', 'd', 'c', 'c', 'c', 'c']]
+
+    template_8x8 = [
+        ['a', 'a', 'a', 'a', 'b', 'b', 'b', 'b'],
+        ['a', 'a', 'a', 'a', 'b', 'b', 'b', 'b'],
+        ['c', 'c', 'c', 'c', 'd', 'd', 'd', 'd'],
+        ['c', 'c', 'c', 'c', 'd', 'd', 'd', 'd'],
+        ['e', 'e', 'e', 'e', 'f', 'f', 'f', 'f'],
+        ['e', 'e', 'e', 'e', 'f', 'f', 'f', 'f'],
+        ['g', 'g', 'g', 'g', 'h', 'h', 'h', 'h'],
+        ['g', 'g', 'g', 'g', 'h', 'h', 'h', 'h']]
+
+    template_9x9 = [
+        ['a', 'a', 'a', 'b', 'b', 'b', 'c', 'c', 'c'],
+        ['a', 'a', 'a', 'b', 'b', 'b', 'c', 'c', 'c'],
+        ['a', 'a', 'a', 'b', 'b', 'b', 'c', 'c', 'c'],
+        ['d', 'd', 'd', 'e', 'e', 'e', 'f', 'f', 'f'],
+        ['d', 'd', 'd', 'e', 'e', 'e', 'f', 'f', 'f'],
+        ['d', 'd', 'd', 'e', 'e', 'e', 'f', 'f', 'f'],
+        ['g', 'g', 'g', 'h', 'h', 'h', 'i', 'i', 'i'],
+        ['g', 'g', 'g', 'h', 'h', 'h', 'i', 'i', 'i'],
+        ['g', 'g', 'g', 'h', 'h', 'h', 'i', 'i', 'i']]
+
+    sudoku = Sudoku(template_5x5, seed=2)
     assert sudoku.solve()
+    print()
     pprint(sudoku.sol)
-    # sudoku.hide()
+    sudoku.hide()
 
     tex(
         sudoku.template,

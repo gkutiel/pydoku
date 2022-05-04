@@ -6,6 +6,7 @@ authors = ["Gilad Kutiel <gilad.kutiel@gmail.com>"]
 
 [tool.poetry.dependencies]
 python = "^3.9"
+tqdm = "^4.64.0"
 
 [tool.poetry.dev-dependencies]
 rope = "^1.0.0"
