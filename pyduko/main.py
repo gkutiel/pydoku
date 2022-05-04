@@ -14,7 +14,7 @@ class Sudoku:
         self.cells = [(i, j) for i in range(n) for j in range(n)]
 
         random.seed(seed)
-        shuffle(self.cells)
+        # shuffle(self.cells)
 
     def used(self):
         rows = defaultdict(set)
@@ -60,20 +60,19 @@ class Sudoku:
         options = self.options()
 
         for i, j in self.cells:
-            vs = options[(i, j)]
-
-            if not vs:
-                return False
-
             if self.sol[i][j] == 0:
+                vs = options[(i, j)]
                 self.sol[i][j] = vs.pop()
                 while not self.solve():
+                    self.sol[i][j] = 0
                     if not vs:
-                        self.sol[i][j] = 0
                         return False
+
                     self.sol[i][j] = vs.pop()
                 return True
 
+        pprint(self.sol)
+        pprint(self.options())
         assert False, 'should not reach here'
 
     def hide(self):
@@ -121,7 +120,7 @@ def tex(template, sol, out):
             for j in range(n):
                 v = sol[i][j]
                 if v != 0:
-                    print(f'\\node at ({i+.5},{j+.5}) {{{v}}};', file=f)
+                    print(f'\\node at ({j+.5},{i+.5}) {{{v}}};', file=f)
 
         for i, j, i2, j2 in borders:
             print(f'%{i, j, i2, j2}', file=f)
@@ -175,9 +174,18 @@ if __name__ == '__main__':
         ['e', 'e', 'e', 'f', 'f', 'f'],
         ['e', 'e', 'e', 'f', 'f', 'f']]
 
-    sudoku = Sudoku(template_5x5, seed=2)
-    assert sudoku.solve(), (pprint(sudoku.sol), pprint(sudoku.options()))
-    sudoku.hide()
+    # template_6x6 = [
+    #     ['a', 'a', 'a', 'b', 'b', 'b'],
+    #     ['a', 'a', 'e', 'f', 'b', 'b'],
+    #     ['a', 'e', 'e', 'f', 'f', 'b'],
+    #     ['d', 'e', 'e', 'f', 'f', 'c'],
+    #     ['d', 'd', 'e', 'f', 'c', 'c'],
+    #     ['d', 'd', 'd', 'c', 'c', 'c']]
+
+    sudoku = Sudoku(template_6x6, seed=0)
+    assert sudoku.solve()
+    pprint(sudoku.sol)
+    # sudoku.hide()
 
     tex(
         sudoku.template,
