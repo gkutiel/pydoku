@@ -97,7 +97,7 @@ def get_borders(template):
 
 
 def tex(template, sol, out):
-    n = len(template)
+    n = len(sol)
     borders = get_borders(template)
     print(len(borders))
     with open(out, 'w') as f:
@@ -106,17 +106,22 @@ def tex(template, sol, out):
         \usetikzlibrary{patterns}
         \begin{document}
         \begin{center}
+        \scalebox{2}{
         \begin{tikzpicture}[x=1cm, y=-1cm]''', file=f)
 
         print(f'\\draw[] (0,0) grid ({n},{n});', file=f)
+
         for i in range(n):
             for j in range(n):
-                print(f'\\node at ({i+.5},{j+.5}) {{{template[j][i]}}};', file=f)
+                v = sol[i][j]
+                if v != 0:
+                    print(f'\\node at ({i+.5},{j+.5}) {{{v}}};', file=f)
+
         for i, j, i2, j2 in borders:
             print(f'%{i, j, i2, j2}', file=f)
-            print(f'\\draw[very thick, red] ({i},{j}) -- ({i2}, {j2});', file=f)
+            print(f'\\draw[very thick] ({i},{j}) -- ({i2}, {j2});', file=f)
 
-        print(r'''\end{tikzpicture}
+        print(r'''\end{tikzpicture}}
         \end{center}
         \end{document}
         \end{tikzpicture}
@@ -125,12 +130,22 @@ def tex(template, sol, out):
 
 
 if __name__ == '__main__':
-    template = [
-        ['a', 'a', 'a', 'b', 'b', 'b'],
-        ['a', 'a', 'a', 'b', 'b', 'b'],
-        ['c', 'c', 'c', 'd', 'd', 'd'],
-        ['c', 'c', 'c', 'd', 'd', 'd'],
-        ['e', 'e', 'e', 'f', 'f', 'f'],
-        ['e', 'e', 'e', 'f', 'f', 'f']]
+    # template = [
+    #     ['a', 'a', 'a', 'b', 'b', 'b'],
+    #     ['a', 'a', 'a', 'b', 'b', 'b'],
+    #     ['c', 'c', 'c', 'd', 'd', 'd'],
+    #     ['c', 'c', 'c', 'd', 'd', 'd'],
+    #     ['e', 'e', 'e', 'f', 'f', 'f'],
+    #     ['e', 'e', 'e', 'f', 'f', 'f']]
 
-    tex(template, None, 'tmp.tex')
+    template = [
+        ['a', 'a', 'b', 'b'],
+        ['a', 'e', 'f', 'b'],
+        ['a', 'e', 'f', 'b'],
+        ['e', 'e', 'f', 'f']]
+
+    sudoku = Sudoku(template)
+    assert sudoku.solve()
+    sudoku.clear()
+
+    tex(template, sudoku.sol, 'tmp.tex')
