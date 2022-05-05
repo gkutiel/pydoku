@@ -149,7 +149,7 @@ def tex(template, sol, out):
 
 
 if __name__ == '__main__':
-    sudoku = Sudoku(templates[3][0], seed=2)
+    sudoku = Sudoku(templates[5][0], seed=2)
     assert sudoku.solve()
     print()
     pprint(sudoku.sol)
