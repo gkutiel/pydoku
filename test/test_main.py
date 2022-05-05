@@ -29,14 +29,14 @@ def sudoku():
     return Sudoku(template)
 
 
-def test_options(sudoku):
+def _test_options(sudoku):
     sudoku.sol = sol
     s = sudoku.options()
     assert s[(0, 0)] == {2}, s
     assert s[(0, 1)] == {3}, s
 
 
-def test_options_part(sudoku):
+def _test_options_part(sudoku):
     sudoku.sol = part
     s = sudoku.options()
     assert s[(0, 0)] == {2}, s
@@ -44,7 +44,7 @@ def test_options_part(sudoku):
     assert s[(0, 2)] == {1}, s
 
 
-def test_is_done(sudoku):
+def _test_is_done(sudoku):
     sudoku.sol = sol
     assert sudoku.is_done()
 
@@ -52,7 +52,7 @@ def test_is_done(sudoku):
     assert not sudoku.is_done()
 
 
-def test_solve(sudoku):
+def _test_solve(sudoku):
     sudoku.sol = sol
     assert sudoku.solve()
     assert sudoku.sol == sol
@@ -72,7 +72,7 @@ def test_solve(sudoku):
         [3, 1, 2]]
 
 
-def test_get_borders():
+def _test_get_borders():
     bs = get_borders([
         ['a', 'b'],
         ['a', 'b']])
@@ -90,7 +90,7 @@ def test_get_borders():
         (1, 1, 1, 2)], bs
 
 
-def test_used(sudoku):
+def _test_used(sudoku):
     sudoku.sol = [
         [1, 0, 2],
         [0, 0, 0],
@@ -102,7 +102,7 @@ def test_used(sudoku):
     assert blks == {'a': {1}, 'c': {2}}, blks
 
 
-def test_options(sudoku):
+def _test_options(sudoku):
     sudoku.sol = [
         [1, 0, 2],
         [0, 0, 0],

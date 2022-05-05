@@ -40,6 +40,26 @@ class Sudoku:
 
         return rows, cols, blks
 
+    def double_used(self):
+        rows = defaultdict(set)
+        cols = defaultdict(set)
+        blks = defaultdict(set)
+
+        for i, j in self.cells:
+            v = self.sol[i][j]
+            b = self.template[i][j]
+
+            if v == 0:
+                continue
+
+            assert v not in rows[i] and v not in cols[j] and v not in blks[b]
+
+            rows[i].add(v)
+            cols[j].add(v)
+            blks[b].add(v)
+
+        return rows, cols, blks
+
     def options(self):
         rows, cols, blks = self.used()
 
@@ -60,7 +80,7 @@ class Sudoku:
             else 0
             for i, j in self.cells)
 
-    def solve(self):
+    def fill(self):
         if not self.has_options():
             return False
 
@@ -77,7 +97,7 @@ class Sudoku:
                 vs = list(options[(i, j)])
                 shuffle(vs)
                 self.sol[i][j] = vs.pop()
-                while not self.solve():
+                while not self.fill():
                     self.sol[i][j] = 0
                     if not vs:
                         return False
@@ -150,7 +170,7 @@ def tex(template, sol, out):
 
 if __name__ == '__main__':
     sudoku = Sudoku(templates[7][0], seed=2)
-    assert sudoku.solve()
+    assert sudoku.fill()
     print()
     pprint(sudoku.sol)
     sudoku.hide()
