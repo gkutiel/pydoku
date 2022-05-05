@@ -1,4 +1,5 @@
 import random
+from pyduko.templates import templates
 from pprint import pprint
 from collections import defaultdict
 from random import shuffle
@@ -148,84 +149,7 @@ def tex(template, sol, out):
 
 
 if __name__ == '__main__':
-    template_3x3 = [
-        ['a', 'b', 'c'],
-        ['a', 'b', 'c'],
-        ['a', 'b', 'c']]
-
-    # template_4x4 = [
-    #     ['a', 'e', 'f', 'b'],
-    #     ['a', 'a', 'b', 'b'],
-    #     ['a', 'e', 'f', 'b'],
-    #     ['e', 'e', 'f', 'f']]
-
-    template_4x4 = [
-        ['a', 'b', 'c', 'd'],
-        ['a', 'b', 'c', 'd'],
-        ['a', 'b', 'c', 'd'],
-        ['a', 'b', 'c', 'd']]
-
-    template_5x5 = [
-        ['a', 'd', 'd', 'd', 'd'],
-        ['a', 'd', 'e', 'c', 'c'],
-        ['a', 'e', 'e', 'e', 'c'],
-        ['a', 'a', 'e', 'b', 'c'],
-        ['b', 'b', 'b', 'b', 'c']]
-
-    # template_5x5 = [
-    #     ['a', 'b', 'c', 'd', 'e'],
-    #     ['a', 'b', 'c', 'd', 'e'],
-    #     ['a', 'b', 'c', 'd', 'e'],
-    #     ['a', 'b', 'c', 'd', 'e'],
-    #     ['a', 'b', 'c', 'd', 'e']]
-
-    # template_6x6 = [
-    #     ['a', 'a', 'a', 'b', 'b', 'b'],
-    #     ['a', 'a', 'a', 'b', 'b', 'b'],
-    #     ['c', 'c', 'c', 'd', 'd', 'd'],
-    #     ['c', 'c', 'c', 'd', 'd', 'd'],
-    #     ['e', 'e', 'e', 'f', 'f', 'f'],
-    #     ['e', 'e', 'e', 'f', 'f', 'f']]
-
-    template_6x6 = [
-        ['a', 'a', 'a', 'b', 'b', 'b'],
-        ['a', 'a', 'e', 'f', 'b', 'b'],
-        ['a', 'e', 'e', 'f', 'f', 'b'],
-        ['d', 'e', 'e', 'f', 'f', 'c'],
-        ['d', 'd', 'e', 'f', 'c', 'c'],
-        ['d', 'd', 'd', 'c', 'c', 'c']]
-
-    template_7x7 = [
-        ['a', 'a', 'a', 'a', 'b', 'b', 'b'],
-        ['a', 'a', 'e', 'e', 'e', 'b', 'b'],
-        ['a', 'e', 'e', 'e', 'e', 'f', 'b'],
-        ['d', 'g', 'g', 'f', 'f', 'f', 'b'],
-        ['d', 'g', 'g', 'g', 'f', 'f', 'c'],
-        ['d', 'd', 'g', 'g', 'f', 'c', 'c'],
-        ['d', 'd', 'd', 'c', 'c', 'c', 'c']]
-
-    template_8x8 = [
-        ['a', 'a', 'a', 'a', 'b', 'b', 'b', 'b'],
-        ['a', 'a', 'a', 'a', 'b', 'b', 'b', 'b'],
-        ['c', 'c', 'c', 'c', 'd', 'd', 'd', 'd'],
-        ['c', 'c', 'c', 'c', 'd', 'd', 'd', 'd'],
-        ['e', 'e', 'e', 'e', 'f', 'f', 'f', 'f'],
-        ['e', 'e', 'e', 'e', 'f', 'f', 'f', 'f'],
-        ['g', 'g', 'g', 'g', 'h', 'h', 'h', 'h'],
-        ['g', 'g', 'g', 'g', 'h', 'h', 'h', 'h']]
-
-    template_9x9 = [
-        ['a', 'a', 'a', 'b', 'b', 'b', 'c', 'c', 'c'],
-        ['a', 'a', 'a', 'b', 'b', 'b', 'c', 'c', 'c'],
-        ['a', 'a', 'a', 'b', 'b', 'b', 'c', 'c', 'c'],
-        ['d', 'd', 'd', 'e', 'e', 'e', 'f', 'f', 'f'],
-        ['d', 'd', 'd', 'e', 'e', 'e', 'f', 'f', 'f'],
-        ['d', 'd', 'd', 'e', 'e', 'e', 'f', 'f', 'f'],
-        ['g', 'g', 'g', 'h', 'h', 'h', 'i', 'i', 'i'],
-        ['g', 'g', 'g', 'h', 'h', 'h', 'i', 'i', 'i'],
-        ['g', 'g', 'g', 'h', 'h', 'h', 'i', 'i', 'i']]
-
-    sudoku = Sudoku(template_5x5, seed=2)
+    sudoku = Sudoku(templates[3][0], seed=2)
     assert sudoku.solve()
     print()
     pprint(sudoku.sol)
