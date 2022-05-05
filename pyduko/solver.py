@@ -1,3 +1,5 @@
+from pprint import pprint
+from tqdm import tqdm
 from collections import defaultdict
 
 
@@ -71,3 +73,39 @@ class Solver:
     def reduce_blks(self):
         for b in range(self.n):
             self.reduce(self.blk(b))
+
+    def progress(self):
+        return len([o for o in self.options.values() if len(o) == 1])
+
+    def solve(self):
+        for _ in range(self.n**2):
+            self.reduce_rows()
+            self.reduce_cols()
+            self.reduce_blks()
+
+        pprint([
+            [o for _, o in self.row(i)]
+            for i in range(self.n)])
+
+        return self.is_done()
+
+
+if __name__ == "__main__":
+    blks = [
+        [1, 1, 1, 2, 2, 2],
+        [1, 1, 1, 2, 2, 2],
+        [3, 3, 3, 4, 4, 4],
+        [3, 3, 3, 4, 4, 4],
+        [5, 5, 5, 6, 6, 6],
+        [5, 5, 5, 6, 6, 6]]
+
+    state = [
+        [0, 3, 0, 4, 0, 0],
+        [0, 0, 5, 6, 0, 3],
+        [0, 0, 0, 1, 0, 0],
+        [0, 1, 0, 3, 0, 5],
+        [0, 6, 4, 0, 3, 1],
+        [0, 0, 1, 0, 4, 6]]
+
+    solver = Solver(blks, state)
+    solver.solve()

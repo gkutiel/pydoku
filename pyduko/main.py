@@ -40,26 +40,6 @@ class Sudoku:
 
         return rows, cols, blks
 
-    def double_used(self):
-        rows = defaultdict(set)
-        cols = defaultdict(set)
-        blks = defaultdict(set)
-
-        for i, j in self.cells:
-            v = self.sol[i][j]
-            b = self.template[i][j]
-
-            if v == 0:
-                continue
-
-            assert v not in rows[i] and v not in cols[j] and v not in blks[b]
-
-            rows[i].add(v)
-            cols[j].add(v)
-            blks[b].add(v)
-
-        return rows, cols, blks
-
     def options(self):
         rows, cols, blks = self.used()
 
