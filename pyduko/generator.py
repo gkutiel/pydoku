@@ -85,6 +85,7 @@ def get_borders(blks):
 
 def tex(template, sol, out):
     n = len(sol)
+    help = ''.join(str(i) for i in range(1, n+1))
     borders = get_borders(template)
     with open(out, 'w') as f:
         print(r'''\documentclass{article}
@@ -102,6 +103,8 @@ def tex(template, sol, out):
                 v = sol[i][j]
                 if v != 0:
                     print(f'\\node at ({j+.5},{i+.5}) {{{v}}};', file=f)
+                else:
+                    print(f'\\node[lightgray, thin] at ({j+.5},{i+.9}) {{\\tiny {help}}};', file=f)
 
         for i, j, i2, j2 in borders:
             print(f'%{i, j, i2, j2}', file=f)
@@ -121,6 +124,8 @@ if __name__ == '__main__':
     solver = Solver(blks)
     generator = Generator(solver)
     state = generator.generate()
+
+    pprint(state)
 
     tex(
         blks,
