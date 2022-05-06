@@ -113,7 +113,7 @@ def tex(template, sol, out):
 
 
 if __name__ == '__main__':
-    blks = templates[4][0]
+    blks = templates[6][0]
 
     solver = Solver(blks)
     generator = Generator(solver)
