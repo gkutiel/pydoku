@@ -9,8 +9,11 @@ def solver():
         [0, 0, 1, 1],
         [2, 2, 3, 3],
         [2, 2, 3, 3]]
-    state = [[0] * 4] * 4
-    return Solver(blks, state)
+
+    solver = Solver(blks)
+    solver.set_state([[0] * 4] * 4)
+
+    return solver
 
 
 def test_count_ops(solver):

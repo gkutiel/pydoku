@@ -4,11 +4,17 @@ from collections import defaultdict
 
 
 class Solver:
-    def __init__(self, blks, state):
-        self.n = n = len(blks)
+    def __init__(self, blks):
+        self.blks = blks
+
+    def __len__(self):
+        return len(self.blks)
+
+    def set_state(self, state):
+        n = len(self)
 
         self.options = {
-            (i, j, blks[i][j]): set(range(1, n+1))
+            (i, j, self.blks[i][j]): set(range(1, n+1))
             for i in range(n)
             for j in range(n)}
 
@@ -19,6 +25,9 @@ class Solver:
 
     def is_done(self):
         return all(len(o) == 1 for o in self.options.values())
+
+    def is_valid(self):
+        return all(len(o) >= 1 for o in self.options.values())
 
     def row(self, r):
         for (i, j, b), ops in self.options.items():
@@ -63,31 +72,29 @@ class Solver:
                 self.options[k] -= ops
 
     def reduce_rows(self):
-        for i in range(self.n):
+        for i in range(len(self)):
             self.reduce(self.row(i))
 
     def reduce_cols(self):
-        for j in range(self.n):
+        for j in range(len(self)):
             self.reduce(self.col(j))
 
     def reduce_blks(self):
-        for b in range(self.n):
+        for b in range(len(self)):
             self.reduce(self.blk(b))
 
-    def progress(self):
-        return len([o for o in self.options.values() if len(o) == 1])
-
     def solve(self):
-        for _ in range(self.n**2):
+        for _ in range(len(self)**2):
             self.reduce_rows()
             self.reduce_cols()
             self.reduce_blks()
 
-        pprint([
-            [o for _, o in self.row(i)]
-            for i in range(self.n)])
-
         return self.is_done()
+
+    def get_solution(self):
+        return [
+            [o for _, o in self.row(i)]
+            for i in range(len(self))]
 
 
 if __name__ == "__main__":
@@ -107,5 +114,7 @@ if __name__ == "__main__":
         [0, 6, 4, 0, 3, 1],
         [0, 0, 1, 0, 4, 6]]
 
-    solver = Solver(blks, state)
+    solver = Solver(blks)
+    solver.set_state(state)
     solver.solve()
+    pprint(solver.get_solution())
