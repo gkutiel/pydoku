@@ -3,12 +3,6 @@ import random
 from pyduko.solver import Solver
 from pyduko.templates import templates
 from pprint import pprint
-from collections import defaultdict
-from random import shuffle
-from tqdm import tqdm
-from math import factorial
-
-from test.test_solver import solver
 
 
 class Generator:
@@ -119,7 +113,7 @@ def tex(template, sol, out):
 
 
 if __name__ == '__main__':
-    blks = templates[6][0]
+    blks = templates[7][0]
 
     solver = Solver(blks)
     generator = Generator(solver)
@@ -130,4 +124,4 @@ if __name__ == '__main__':
     tex(
         blks,
         state,
-        'test.tex')
+        'sudoku.tex')

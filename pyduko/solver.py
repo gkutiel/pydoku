@@ -1,11 +1,14 @@
 from pprint import pprint
-from tqdm import tqdm
-from collections import defaultdict
+
+from pyduko.reducers import reduce_others
 
 
 class Solver:
-    def __init__(self, blks):
+    def __init__(self, blks, reducers=[
+            reduce_others]):
+
         self.blks = blks
+        self.reducers = reducers
 
     def __len__(self):
         return len(self.blks)
@@ -44,50 +47,16 @@ class Solver:
             if b == k:
                 yield (i, j, b), ops
 
-    @staticmethod
-    def count_ops(it):
-        ops_count = defaultdict(int)
-        for _, ops in it:
-            ops_count[tuple(ops)] += 1
-
-        return ops_count
-
-    @staticmethod
-    def reduceable_ops(ops_count):
-        for ops, count in ops_count.items():
-            if len(ops) == count:
-                yield set(ops)
-
-    @staticmethod
-    def other_cells(it, ops):
-        for k, v in it:
-            if v != ops:
-                yield k
-
-    def reduce(self, it):
-        it = list(it)
-        ops_count = self.count_ops(it)
-        for ops in self.reduceable_ops(ops_count):
-            for k in self.other_cells(it, ops):
-                self.options[k] -= ops
-
-    def reduce_rows(self):
+    def reduce(self):
         for i in range(len(self)):
-            self.reduce(self.row(i))
-
-    def reduce_cols(self):
-        for j in range(len(self)):
-            self.reduce(self.col(j))
-
-    def reduce_blks(self):
-        for b in range(len(self)):
-            self.reduce(self.blk(b))
+            for reducer in self.reducers:
+                reducer(list(self.row(i)))
+                reducer(list(self.col(i)))
+                reducer(list(self.blk(i)))
 
     def solve(self):
         for _ in range(len(self)**2):
-            self.reduce_rows()
-            self.reduce_cols()
-            self.reduce_blks()
+            self.reduce()
 
         return self.is_done()
 
