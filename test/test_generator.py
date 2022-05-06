@@ -1,3 +1,4 @@
+from random import seed
 from pyduko.solver import Solver
 from pyduko.templates import templates
 from pytest import fixture
@@ -17,5 +18,5 @@ def test_fill(generator):
 
 
 def test_generate(generator):
-    state = generator.generate()
+    state = generator.generate(seed=2022)
     assert state == [[3, 0, 0, 0], [0, 1, 0, 0], [0, 0, 1, 0], [0, 2, 4, 0]]

@@ -46,8 +46,10 @@ class Generator:
 
         return True
 
-    def generate(self, seed=2022):
-        random.seed(seed)
+    def generate(self, seed=None):
+        if seed is not None:
+            random.seed(seed)
+
         self.fill()
         assert self.solver.is_done()
         self.state = [
@@ -57,6 +59,7 @@ class Generator:
         n = len(self.solver)
         cells = [(i, j) for i in range(n) for j in range(n)]
         random.shuffle(cells)
+
         for i, j in cells:
             v = self.state[i][j]
             self.state[i][j] = 0
