@@ -119,9 +119,7 @@ if __name__ == '__main__':
     generator = Generator(solver)
     state = generator.generate()
 
-    solver.set_state(state)
-    solver.solve()
-
-    pprint(blks)
-    pprint(state)
-    print(solver.get_solution())
+    tex(
+        blks,
+        state,
+        'test.tex')
