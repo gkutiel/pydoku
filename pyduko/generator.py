@@ -113,15 +113,15 @@ def tex(template, sol, out):
 
 
 if __name__ == '__main__':
-    blks = templates[7][0]
+    for i in [4, 5, 6]:
+        blks = templates[i][0]
 
-    solver = Solver(blks)
-    generator = Generator(solver)
-    state = generator.generate()
+        for j in [1, 2, 3]:
+            solver = Solver(blks)
+            generator = Generator(solver)
+            state = generator.generate()
 
-    pprint(state)
-
-    tex(
-        blks,
-        state,
-        'sudoku.tex')
+            tex(
+                blks,
+                state,
+                f'sudoku_{i}x{i}_{j}.tex')

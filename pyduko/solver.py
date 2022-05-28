@@ -1,10 +1,11 @@
 from pprint import pprint
 
-from pyduko.reducers import reduce_others
+from pyduko.reducers import reduce_others, reduce_self
 
 
 class Solver:
     def __init__(self, blks, reducers=[
+            reduce_self,
             reduce_others]):
 
         self.blks = blks
