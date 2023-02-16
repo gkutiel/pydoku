@@ -1,8 +1,7 @@
-from email import generator
 import random
+
 from pyduko.solver import Solver
 from pyduko.templates import templates
-from pprint import pprint
 
 
 class Generator:
@@ -113,7 +112,7 @@ def tex(template, sol, out):
 
 
 if __name__ == '__main__':
-    for i in [4, 5, 6]:
+    for i in [4, 5, 6, 7]:
         blks = templates[i][0]
 
         for j in [1, 2, 3]:
